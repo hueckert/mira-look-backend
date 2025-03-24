@@ -1,36 +1,32 @@
-// npm
+
 const dotenv = require('dotenv');
 dotenv.config();
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const cors = require('cors');
-const logger = require('morgan');
-
-// Import routers
-const authRouter = require('./controllers/auth');
-const testJwtRouter = require('./controllers/test-jwt');
+const testJWTRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
+const searchRouter = require("./controllers/search")
+const watchListRouter = require("./controllers/watch-list")
 
-// Connect to MongoDB
+
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
-  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+    console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
-
-// Middleware
 app.use(cors());
 app.use(express.json());
-app.use(logger('dev'));
 
-// Routes
-app.use('/auth', authRouter);
-app.use('/test-jwt', testJwtRouter);
+// Routes go here
+app.use('/test-jwt', testJWTRouter);
 app.use('/users', usersRouter);
+app.use('/search', searchRouter);
+app.use('/watch-list', watchListRouter);
 
-// Start the server and listen on port 3000
-app.listen(3000, () => {
-  console.log('The express app is ready!');
+
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log('The express app is ready!');
 });
-
